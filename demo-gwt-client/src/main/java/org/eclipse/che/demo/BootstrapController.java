@@ -17,6 +17,9 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+import org.eclipse.che.demo.notification.NotificationManager;
+import org.eclipse.che.demo.notification.NotificationManagerImpl;
+
 import javax.annotation.PostConstruct;
 
 /**
@@ -51,6 +54,9 @@ GWT.log("BootstrapController.init()");
 
         MyBus myBus = new MyBus("http://localhost:8080");
         CheAPI.setBus(myBus);
+
+        NotificationManager notificationManager = new NotificationManagerImpl();
+        CheAPI.setNotificationManager(notificationManager);
 
         final Button sendButton = new Button("Send");
         final TextBox nameField = new TextBox();
@@ -108,7 +114,7 @@ GWT.log("BootstrapController.init()");
 
                 GWT.log("hello florent");
                 JQuery jQuery = JQueryHelper.$("#myDiv").css("border", "3px solid red");
-                ScriptInjector.fromUrl("/my-plugin.js").setRemoveTag(true)
+                ScriptInjector.fromUrl("/my-plugin2.js").setRemoveTag(true)
                               .setWindow(ScriptInjector.TOP_WINDOW)
                               .inject();
                 sendNameToServer();

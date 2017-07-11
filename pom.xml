@@ -120,5 +120,6 @@
     <module>demo-gwt-client</module>
     <module>demo-gwt-shared</module>
     <module>demo-gwt-server</module>
+    <module>my-plugin</module>
   </modules>
 </project>
