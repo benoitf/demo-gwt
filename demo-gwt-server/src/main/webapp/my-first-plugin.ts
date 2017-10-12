@@ -1,6 +1,10 @@
+declare module che {
+
+    export interface Window {
+    }
+}
 export function load() {
     console.log("loading code of plugin");
-
 
     // get document
     var cheWindow = new che.Window();
@@ -14,6 +18,8 @@ export function load() {
 
 }
 
-export function unload() {
+export function unload() {@
     console.log("unloading code of plugin");
 }
+
+

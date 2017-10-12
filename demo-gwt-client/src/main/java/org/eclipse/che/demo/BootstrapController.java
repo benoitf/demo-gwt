@@ -1,26 +1,13 @@
 package org.eclipse.che.demo;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.ScriptInjector;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-
-import org.eclipse.che.demo.notification.NotificationManager;
-import org.eclipse.che.demo.notification.NotificationManagerImpl;
-
-import javax.annotation.PostConstruct;
 
 /**
  * @author Florent Benoit
@@ -33,153 +20,64 @@ public class BootstrapController {
     }
 
     /**
-     * The message displayed to the user when the server cannot be reached or
-     * returns an error.
-     */
-    private static final String SERVER_ERROR = "An error occurred while "
-                                               + "attempting to contact the server. Please check your network "
-                                               + "connection and try again.";
-
-    /**
-     * Create a remote service proxy to talk to the server-side Greeting service.
-     */
-    private final GreetingServiceAsync greetingService = GWT
-            .create(GreetingService.class);
-
-    /**
      * This is the entry point method.
      */
     public void init() {
-GWT.log("BootstrapController.init()");
-
-        MyBus myBus = new MyBus("http://localhost:8080");
-        CheAPI.setBus(myBus);
-
-        NotificationManager notificationManager = new NotificationManagerImpl();
-        CheAPI.setNotificationManager(notificationManager);
-
-        final Button sendButton = new Button("Send");
-        final TextBox nameField = new TextBox();
-        nameField.setText("GWT User");
-        final Label errorLabel = new Label();
-
-        // We can add style names to widgets
-        sendButton.addStyleName("sendButton");
-
-        // Add the nameField and sendButton to the RootPanel
-        // Use RootPanel.get() to get the entire body element
-        RootPanel.get("nameFieldContainer").add(nameField);
-        RootPanel.get("sendButtonContainer").add(sendButton);
-        RootPanel.get("errorLabelContainer").add(errorLabel);
-
-        // Focus the cursor on the name field when the app loads
-        nameField.setFocus(true);
-        nameField.selectAll();
-
-        // Create the popup dialog box
-        final DialogBox dialogBox = new DialogBox();
-        dialogBox.setText("Remote Procedure Call");
-        dialogBox.setAnimationEnabled(true);
-        final Button closeButton = new Button("Close");
-        // We can set the id of a widget by accessing its Element
-        closeButton.getElement().setId("closeButton");
-        final Label textToServerLabel = new Label();
-        final HTML serverResponseLabel = new HTML();
-        VerticalPanel dialogVPanel = new VerticalPanel();
-        dialogVPanel.addStyleName("dialogVPanel");
-        dialogVPanel.add(new HTML("<b>Sending name to the server:</b>"));
-        dialogVPanel.add(textToServerLabel);
-        dialogVPanel.add(new HTML("<br><b>Server replies:</b>"));
-        dialogVPanel.add(serverResponseLabel);
-        dialogVPanel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
-        dialogVPanel.add(closeButton);
-        dialogBox.setWidget(dialogVPanel);
-
-        // Add a handler to close the DialogBox
-        closeButton.addClickHandler(new ClickHandler() {
-            public void onClick(ClickEvent event) {
-                dialogBox.hide();
-                sendButton.setEnabled(true);
-                sendButton.setFocus(true);
-            }
-        });
-
-        // Create a handler for the sendButton and nameField
-        class MyHandler implements ClickHandler, KeyUpHandler {
-            /**
-             * Fired when the user clicks on the sendButton.
-             */
-            public void onClick(ClickEvent event) {
+      GWT.log("BootstrapController.init()");
 
 
-                GWT.log("hello florent");
-                JQuery jQuery = JQueryHelper.$("#myDiv").css("border", "3px solid red");
-                ScriptInjector.fromUrl("/my-plugin2.js").setRemoveTag(true)
-                              .setWindow(ScriptInjector.TOP_WINDOW)
-                              .inject();
-                sendNameToServer();
-            }
+      Panels panels = new Panels();
+      panels.addInformationPanel("my GWT panel", "this is my plugin with GWT", null);
 
-            /**
-             * Fired when the user types in the nameField.
-             */
-            public void onKeyUp(KeyUpEvent event) {
-                if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-                    sendNameToServer();
-                }
-            }
+      //create buttons
+      Button redButton = new Button("Dummmy");
+      Button greenButton = new Button("foo");
+      Button blueButton = new Button("Blue");
 
-            /**
-             * Send the name from the nameField to the server and wait for a response.
-             */
-            private void sendNameToServer() {
-                // First, we validate the input.
-                errorLabel.setText("");
-                String textToServer = nameField.getText();
-                if (!FieldVerifier.isValidName(textToServer)) {
-                    errorLabel.setText("Please enter at least four characters");
-                    return;
-                }
+      // use UIObject methods to set button properties.
+      redButton.setWidth("100px");
+      greenButton.setWidth("100px");
+      blueButton.setWidth("100px");
+      greenButton.addStyleName("gwt-Green-Button");
+      blueButton.addStyleName("gwt-Blue-Button");
 
-                // Then, we send the input to the server.
-                sendButton.setEnabled(false);
-                textToServerLabel.setText(textToServer);
-                serverResponseLabel.setText("");
-                greetingService.greetServer(textToServer,
-                                            new AsyncCallback<GreetingResponse>() {
-                                                public void onFailure(Throwable caught) {
-                                                    // Show the RPC error message to the user
-                                                    dialogBox
-                                                            .setText("Remote Procedure Call - Failure");
-                                                    serverResponseLabel
-                                                            .addStyleName("serverResponseLabelError");
-                                                    serverResponseLabel.setHTML(SERVER_ERROR);
-                                                    dialogBox.center();
-                                                    closeButton.setFocus(true);
-                                                }
-
-                                                public void onSuccess(GreetingResponse result) {
-                                                    dialogBox.setText("Remote Procedure Call");
-                                                    serverResponseLabel
-                                                            .removeStyleName("serverResponseLabelError");
-                                                    serverResponseLabel.setHTML(new SafeHtmlBuilder()
-                                                                                        .appendEscaped(result.getGreeting())
-                                                                                        .appendHtmlConstant("<br><br>I am running ")
-                                                                                        .appendEscaped(result.getServerInfo())
-                                                                                        .appendHtmlConstant(".<br><br>It looks like you are using:<br>")
-                                                                                        .appendEscaped(result.getUserAgent())
-                                                                                        .toSafeHtml());
-                                                    dialogBox.center();
-                                                    closeButton.setFocus(true);
-                                                }
-                                            });
-            }
+      //add a clickListener to the button
+      redButton.addClickHandler(new ClickHandler() {
+        @Override
+        public void onClick(ClickEvent event) {
+          GWT.log("click on red button");
         }
+      });
 
-        // Add a handler to send the name to the server
-        MyHandler handler = new MyHandler();
-        sendButton.addClickHandler(handler);
-        nameField.addKeyUpHandler(handler);
+      //add a clickListener to the button
+      greenButton.addClickHandler(new ClickHandler() {
+        @Override
+        public void onClick(ClickEvent event) {
+          Window.alert("Green Button clicked!");
+        }
+      });
 
+      //add a clickListener to the button
+      blueButton.addClickHandler(new ClickHandler() {
+        @Override
+        public void onClick(ClickEvent event) {
+          Window.alert("Blue Button clicked!");
+        }
+      });
+
+      // Add button to the root panel.
+      VerticalPanel panel = new VerticalPanel();
+      panel.getElement().getStyle().setZIndex(500);
+      panel.setSpacing(10);
+      panel.add(redButton);
+      panel.add(greenButton);
+      panel.add(blueButton);
+
+      RootPanel rootPanel = RootPanel.get("gwt-debug-notificationManager-mainPanel");
+      rootPanel.sinkEvents(Event.ONCLICK);
+      panel.sinkEvents(Event.ONCLICK);
+      Event.sinkEvents(panel.getElement(), Event.ONCLICK);
+      Event.sinkEvents(rootPanel.getElement(), Event.ONCLICK);
+      rootPanel.add(panel);
     }
 }

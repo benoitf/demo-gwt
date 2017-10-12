@@ -53,7 +53,7 @@
         <artifactId>gwt-maven-plugin</artifactId>
         <configuration>
           <moduleName>org.eclipse.che.demo.App</moduleName>
-          <moduleShortName>hello</moduleShortName>
+          <moduleShortName>FlorentGWTPlugin</moduleShortName>
         </configuration>
       </plugin>
     </plugins>
